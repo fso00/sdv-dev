@@ -84,12 +84,10 @@ author = 'DataCebo, Inc.'
 description = 'Synthetic Data Generation for tabular, relational and time series data.'
 user = 'sdv-dev'
 
-# New docs for V1.0 Beta announcement
+# New docs for V1.0 warning
 rst_prolog = """
-    .. admonition:: Try the new SDV 1.0 Beta!
-
-        We are transitioning to a new version of SDV with improved workflows, new features
-        and an updated documentation site.
+    .. danger:: You are looking at the documentation for an older version of the SDV! We are no
+        longer supporting or maintaining this version of the software
 
         `Click here to go to the new docs pages. <https://docs.sdv.dev/sdv/>`_
 """
