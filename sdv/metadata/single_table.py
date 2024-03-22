@@ -632,7 +632,7 @@ class SingleTableMetadata:
     def _validate_key(self, column_name, key_type):
         """Validate the primary and sequence keys."""
         if column_name is not None:
-            if not self._validate_key_datatype(column_name):
+            if not self._validate_key_datatype(column_name) or not (isinstance(column_name, tuple) and all(isinstance(column, str) for column in column_name)):
                 raise InvalidMetadataError(
                     f"'{key_type}_key' must be a string.")
 
