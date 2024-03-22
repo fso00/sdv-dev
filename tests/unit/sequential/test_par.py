@@ -952,3 +952,18 @@ class TestPARSynthesizer:
         mock_file.assert_called_once_with('synth.pkl', 'rb')
         cloudpickle_mock.load.assert_called_once_with(mock_file.return_value)
         assert loaded_instance == synthesizer_mock
+
+    def test_multiple_columns_for_sequence_key(self):
+        data = pd.DataFrame({
+            'first_name': ['Alice', 'Bob', 'Charlie'],
+            'last_name': ['Smith', 'Jones', 'Brown'],
+        })
+        metadata = SingleTableMetadata()
+        metadata.add_column('first_name', sdtype='id')
+        metadata.add_column('last_name', sdtype='id')
+        metadata.set_sequence_key(column_name=('first_name', 'last_name'))
+        assert metadata.sequence_key == ('first_name', 'last_name')
+        instance = PARSynthesizer(
+            metadata=metadata
+        )
+        instance.validate(data)

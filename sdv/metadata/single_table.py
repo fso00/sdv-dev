@@ -632,9 +632,9 @@ class SingleTableMetadata:
     def _validate_key(self, column_name, key_type):
         """Validate the primary and sequence keys."""
         if column_name is not None:
-            if not self._validate_key_datatype(column_name) or not (isinstance(column_name, tuple) and all(isinstance(column, str) for column in column_name)):
+            if not self._validate_key_datatype(column_name):
                 raise InvalidMetadataError(
-                    f"'{key_type}_key' must be a string.")
+                    f"'{key_type}_key' must be a string 1.")
 
             keys = {column_name} if isinstance(column_name, str) else set(column_name)
             invalid_ids = keys - set(self.columns)
@@ -685,7 +685,7 @@ class SingleTableMetadata:
             column_name (str):
                 Name of the sequence key column(s).
         """
-        self._validate_key(column_name, 'sequence')
+        self._validate_sequence_key(column_name)
         if self.sequence_key is not None:
             warnings.warn(
                 f"There is an existing sequence key '{self.sequence_key}'."
@@ -752,6 +752,26 @@ class SingleTableMetadata:
         if sdtype not in ['datetime', 'numerical']:
             raise InvalidMetadataError(
                 "The sequence_index must be of type 'datetime' or 'numerical'.")
+
+    def _validate_sequence_key(self, column_name):
+        if column_name is not None:
+            if isinstance(column_name, tuple):
+                if not all(self._validate_key_datatype(column) for column in column_name):
+                    raise InvalidMetadataError(
+                        "'sequence_key' must be a string or a tuple of strings."
+                    )
+            elif not isinstance(column_name, str) and self._validate_key_datatype(column_name):
+                raise InvalidMetadataError("'sequence_key' must be a string or a tuple of strings.")
+
+            keys = {column_name} if isinstance(column_name, str) else set(column_name)
+            invalid_ids = keys - set(self.columns)
+            if invalid_ids:
+                raise InvalidMetadataError(
+                    f'Unknown sequence key values {invalid_ids}.'
+                    ' Keys should be columns that exist in the table.'
+                )
+
+            self._validate_keys_sdtype(keys, 'sequence')
 
     def set_sequence_index(self, column_name):
         """Set the metadata sequence index.
