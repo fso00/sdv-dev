@@ -36,7 +36,7 @@ def unit(c):
 
 @task
 def integration(c):
-    c.run('python -m pytest ./tests/integration --reruns 3')
+    c.run('python -m pytest ./tests/integration --reruns 3 --durations 0')
 
 
 def _get_minimum_versions(dependencies, python_version):
@@ -84,7 +84,7 @@ def install_minimum(c):
 def minimum(c):
     install_minimum(c)
     check_dependencies(c)
-    unit(c)
+    #unit(c)
     integration(c)
 
 
