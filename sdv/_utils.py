@@ -1,14 +1,20 @@
 """Miscellaneous utility functions."""
 import operator
+import os
+import pickle
 import uuid
 import warnings
-from collections import defaultdict
+from collections import Counter, defaultdict
 from collections.abc import Iterable
 from datetime import datetime
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 from pandas.core.tools.datetimes import _guess_datetime_format_for_array
+from sklearn.discriminant_analysis import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
 
 from sdv import version
 from sdv.errors import SDVVersionWarning, SynthesizerInputError, VersionError
@@ -409,3 +415,78 @@ def generate_synthesizer_id(synthesizer):
     synth_version = version.public
     unique_id = ''.join(str(uuid.uuid4()).split('-'))
     return f'{class_name}_{synth_version}_{unique_id}'
+
+def _generate_feature_vector(data, foreign_key):
+    parent_name = foreign_key[0]
+    parent_col, child_col = data[foreign_key[0]][foreign_key[1]], data[foreign_key[2]][foreign_key[3]]
+    parent_set, child_set = set(parent_col), set(child_col)
+
+    return [
+        len(child_set) / (len(parent_set) + 1e-5),
+        len(child_set) / (len(child_col) + 1e-5),
+        1.0 if parent_col.name == child_col.name else 0.0,
+        1.0 if child_col.name.lower().endswith('id') or child_col.name.lower().endswith('key') else 0.0,
+        1.0 if parent_name[:-1] in child_col else 0.0,
+    ]
+
+def confusion_matrix(set1, set2):
+    true_positive, false_positive, false_negative = set(), set(), set()
+    for key in set1:
+        if key in set2:
+            true_positive.add(key)
+        else:
+            false_positive.add(key)
+    
+    for key in set2:
+        if key not in set1:
+            false_negative.add(key)
+    
+    return {
+        'True Positive': true_positive,
+        'False Positive': false_positive,
+        'False Negative': false_negative
+    }
+
+def train_foreign_key_detector():
+    """Generate a foreign key detection model using logistic regression and pickle it.
+
+    This function is used to create and train a foreign key detection model.
+    """
+    features, target = np.empty(shape=(0,5)), np.empty(shape=(0,))
+    pipeline = Pipeline([
+        ('scaler', StandardScaler()),
+        ('detector', LogisticRegression())
+    ])
+
+    # Load the data
+    for demo_name in os.listdir('test_set'):
+        with open(f'test_set/{demo_name}/relationships.pkl', 'rb') as f:
+            true_relationships = pickle.load(f)
+        with open(f'predicted/{demo_name}/relationships.pkl', 'rb') as f:
+            predicted_relationships = pickle.load(f)
+
+        data = {}
+        for table_name in os.listdir(f'test_set/{demo_name}'):
+            if table_name.endswith('.csv'):
+                data[table_name[:-4]] = pd.read_csv(f'test_set/{demo_name}/{table_name}', low_memory=False)
+
+        cm = confusion_matrix(predicted_relationships, true_relationships)
+        for foreign_key in cm['True Positive']:
+            features = np.vstack((features, _generate_feature_vector(data, foreign_key)))
+            target = np.append(target, 1.)
+
+        for foreign_key in cm['False Positive']:
+            features = np.vstack((features, _generate_feature_vector(data, foreign_key)))
+            target = np.append(target, 0.)
+
+    pipeline.fit(features, target)
+    with open('trained_model.pkl', 'wb') as f:
+        pickle.dump(pipeline, f)
+
+
+def predict_foreign_keys(data, parent_candidate, primary_key, child_candidate, column_name, threshold):
+    features = np.array(_generate_feature_vector(data, (parent_candidate, primary_key, child_candidate, column_name))).reshape(1, -1)
+    trained_model = pickle.load(open('trained_model.pkl', 'rb'))
+    if trained_model.predict_proba(features)[0, 1] > threshold:
+        return True
+    return False

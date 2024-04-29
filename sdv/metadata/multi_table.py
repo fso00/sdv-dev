@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from sdv._utils import _cast_to_iterable, _load_data_from_csv
+from sdv._utils import _cast_to_iterable, _load_data_from_csv, predict_foreign_keys
 from sdv.errors import InvalidDataError
 from sdv.metadata.errors import InvalidMetadataError
 from sdv.metadata.metadata_upgrader import convert_metadata
@@ -485,8 +485,8 @@ class MultiTableMetadata:
 
             raise InvalidMetadataError(
                 f'The relationships in the dataset are disjointed. {table_msg}')
-
-    def _detect_relationships(self):
+    
+    def _detect_relationships_original(self):
         """Automatically detect relationships between tables."""
         for parent_candidate in self.tables.keys():
             primary_key = self.tables[parent_candidate].primary_key
@@ -508,6 +508,99 @@ class MultiTableMetadata:
                         self.update_column(child_candidate,
                                            primary_key,
                                            sdtype=original_foreign_key_sdtype)
+                        continue
+
+        try:
+            self._validate_all_tables_connected(self._get_parent_map(), self._get_child_map())
+        except InvalidMetadataError as invalid_error:
+            warning_msg = (
+                f'Could not automatically add relationships for all tables. {str(invalid_error)}'
+            )
+            warnings.warn(warning_msg)
+
+    def _detect_relationships_hard_coded(self, data):
+        """Automatically detect relationships between tables."""
+        for parent_candidate in self.tables.keys():
+            primary_key = self.tables[parent_candidate].primary_key
+            if primary_key is None:
+                continue
+
+            for child_candidate in self.tables.keys() - {parent_candidate}:
+                child_meta = self.tables[child_candidate]
+                candidates = set()
+                for column_name in child_meta.columns.keys():
+                    #is_consecutive_integers = (  # TODO: this worsens performance somehow
+                    #    data[child_candidate][column_name].dtype == 'int' and \
+                    #    data[child_candidate][column_name].dropna().isin(range(len(data[child_candidate]))).all() and \
+                    #    len(set(data[child_candidate][column_name].dropna())) == len(data[child_candidate][column_name].dropna()) and \
+                    #    len(data[child_candidate]) > 100
+                    #)
+                    if column_name != child_meta.primary_key and \
+                        data[child_candidate][column_name].dropna().isin(data[parent_candidate][primary_key]).all():
+                        candidates.add(column_name)
+
+                for candidate in candidates:
+                    try:
+                        original_foreign_key_sdtype = child_meta.columns[candidate]['sdtype']
+                        if original_foreign_key_sdtype != 'id':
+                            self.update_column(child_candidate, candidate, sdtype='id')
+
+                        self.add_relationship(
+                            parent_candidate,
+                            child_candidate,
+                            primary_key,
+                            candidate
+                        )
+                    except InvalidMetadataError as e:
+                        print(e)
+                        self.update_column(child_candidate,
+                                           candidate,
+                                           sdtype=original_foreign_key_sdtype)
+                        continue
+
+        try:
+            self._validate_all_tables_connected(self._get_parent_map(), self._get_child_map())
+        except InvalidMetadataError as invalid_error:
+            warning_msg = (
+                f'Could not automatically add relationships for all tables. {str(invalid_error)}'
+            )
+            warnings.warn(warning_msg)
+
+    def _detect_relationships(self, data, threshold=.9):
+        """Automatically detect relationships between tables."""
+        for parent_candidate in self.tables.keys():
+            primary_key = self.tables[parent_candidate].primary_key
+            if primary_key is None:
+                continue
+
+            for child_candidate in self.tables.keys() - {parent_candidate}:
+                child_meta = self.tables[child_candidate]
+                candidates = set()
+                for column_name in child_meta.columns.keys():
+                    if column_name != child_meta.primary_key and \
+                        data[child_candidate][column_name].dropna().isin(data[parent_candidate][primary_key]).all():
+                        if predict_foreign_keys(data, parent_candidate, primary_key, child_candidate, column_name, threshold):
+                            candidates.add(column_name)
+
+                for candidate in candidates:
+                    try:
+                        original_foreign_key_sdtype = child_meta.columns[candidate]['sdtype']
+                        if original_foreign_key_sdtype != 'id':
+                            self.update_column(child_candidate, candidate, sdtype='id')
+
+                        self.add_relationship(
+                            parent_candidate,
+                            child_candidate,
+                            primary_key,
+                            candidate
+                        )
+                    except InvalidMetadataError as e:
+                        print(e)
+                        self.update_column(
+                            child_candidate,
+                            candidate,
+                            sdtype=original_foreign_key_sdtype
+                        )
                         continue
 
         try:
@@ -546,7 +639,7 @@ class MultiTableMetadata:
         for table_name, dataframe in data.items():
             self.detect_table_from_dataframe(table_name, dataframe)
 
-        self._detect_relationships()
+        self._detect_relationships(data)
 
     def detect_table_from_csv(self, table_name, filepath, read_csv_parameters=None):
         """Detect the metadata for a table from a csv file.
@@ -573,7 +666,6 @@ class MultiTableMetadata:
         Args:
             folder_name (str):
                 Name of the folder to detect the metadata from.
-
         """
         folder_path = Path(folder_name)
 
@@ -585,11 +677,13 @@ class MultiTableMetadata:
         if not csv_files:
             raise ValueError(f"No CSV files detected in the folder '{folder_name}'.")
 
+        data = {}
         for csv_file in csv_files:
             table_name = csv_file.stem
             self.detect_table_from_csv(table_name, str(csv_file), read_csv_parameters)
+            data[table_name] = pd.read_csv(csv_file, low_memory=False)
 
-        self._detect_relationships()
+        self._detect_relationships(data)
 
     def set_primary_key(self, table_name, column_name):
         """Set the primary key of a table.

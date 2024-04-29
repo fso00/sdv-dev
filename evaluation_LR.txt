@@ -1,0 +1,444 @@
+Accidents_v1
+Confusion Matrix: {'True Positive': {('upravna_enota', 'id_upravna_enota', 'nesreca', 'upravna_enota'), ('upravna_enota', 'id_upravna_enota', 'oseba', 'upravna_enota'), ('nesreca', 'id_nesreca', 'oseba', 'id_nesreca')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 3
+Num True Positive: 3
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+Atherosclerosis_v1
+Confusion Matrix: {'True Positive': {('Entry', 'ICO', 'Letter', 'ICO'), ('Entry', 'ICO', 'Death', 'ICO'), ('Entry', 'ICO', 'Contr', 'ICO')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 3
+Num True Positive: 3
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+AustralianFootball_v1
+Confusion Matrix: {'True Positive': {('matches', 'mid', 'match_stats', 'mid'), ('teams', 'tid', 'match_stats', 'tid'), ('teams', 'tid', 'matches', 'tid1'), ('players', 'pid', 'match_stats', 'pid'), ('teams', 'tid', 'matches', 'tid2')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 5
+Num True Positive: 5
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+Biodegradability_v1
+Confusion Matrix: {'True Positive': {('atom', 'atom_id', 'bond', 'atom_id'), ('molecule', 'molecule_id', 'atom', 'molecule_id'), ('atom', 'atom_id', 'gmember', 'atom_id'), ('atom', 'atom_id', 'bond', 'atom_id2'), ('group', 'group_id', 'gmember', 'group_id')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 5
+Num True Positive: 5
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+Bupa_v1
+Confusion Matrix: {'True Positive': {('bupa_name', 'arg1', 'gammagt', 'arg1'), ('bupa_name', 'arg1', 'sgpt', 'arg1'), ('bupa_name', 'arg1', 'alkphos', 'arg1'), ('bupa_name', 'arg1', 'bupa', 'arg1'), ('bupa_name', 'arg1', 'mcv', 'arg1'), ('bupa_name', 'arg1', 'drinks', 'arg1'), ('bupa_name', 'arg1', 'sgot', 'arg1'), ('bupa_type', 'arg1', 'bupa', 'arg2')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 8
+Num True Positive: 8
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+CORA_v1
+Confusion Matrix: {'True Positive': {('paper', 'paper_id', 'content', 'paper_id')}, 'False Positive': set(), 'False Negative': {('paper', 'paper_id', 'cites', 'citing_paper_id'), ('paper', 'paper_id', 'cites', 'cited_paper_id')}}
+Num Foreign Keys: 3
+Num True Positive: 3
+Num False Positive: 0
+Num False Negative: 2
+Accuracy: 0.3333333333333333
+
+Carcinogenesis_v1
+Confusion Matrix: {'True Positive': {('atom', 'atomid', 'sbond_1', 'atomid_2'), ('canc', 'drug_id', 'sbond_7', 'drug'), ('atom', 'atomid', 'sbond_3', 'atomid'), ('atom', 'atomid', 'sbond_2', 'atomid'), ('atom', 'atomid', 'sbond_7', 'atomid'), ('canc', 'drug_id', 'sbond_1', 'drug'), ('canc', 'drug_id', 'sbond_2', 'drug'), ('canc', 'drug_id', 'sbond_3', 'drug'), ('atom', 'atomid', 'sbond_2', 'atomid_2'), ('atom', 'atomid', 'sbond_3', 'atomid_2'), ('atom', 'atomid', 'sbond_7', 'atomid_2'), ('atom', 'atomid', 'sbond_1', 'atomid'), ('canc', 'drug_id', 'atom', 'drug')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 13
+Num True Positive: 13
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+Chess_v1
+Confusion Matrix: {'True Positive': set(), 'False Positive': set(), 'False Negative': {('opening', 'opening_id', 'game', 'opening_id')}}
+Num Foreign Keys: 1
+Num True Positive: 1
+Num False Positive: 0
+Num False Negative: 1
+Accuracy: 0.0
+
+Countries_v1
+Confusion Matrix: {'True Positive': {('Metadata - Indicators', 'INDICATOR_CODE', 'Data', 'Indicator Code'), ('Metadata - Countries', 'Country Code', 'Data', 'Country Code'), ('Metadata - Countries', 'Country Code', 'target', 'Country Code')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 3
+Num True Positive: 3
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+DCG_v1
+Confusion Matrix: {'True Positive': {('sentences', 'id', 'terms', 'id_sentence')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 1
+Num True Positive: 1
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+Dunur_v1
+Confusion Matrix: {'True Positive': {('person', 'name', 'son', 'name1'), ('person', 'name', 'target', 'name1'), ('person', 'name', 'father', 'name2'), ('person', 'name', 'father', 'name1'), ('person', 'name', 'mother', 'name2'), ('person', 'name', 'mother', 'name1'), ('person', 'name', 'wife2', 'name1'), ('person', 'name', 'uncle', 'name2'), ('person', 'name', 'wife2', 'name2'), ('person', 'name', 'wife', 'name2'), ('person', 'name', 'uncle', 'name1'), ('person', 'name', 'husband2', 'name1'), ('person', 'name', 'aunt', 'name2'), ('person', 'name', 'wife', 'name1'), ('person', 'name', 'aunt', 'name1'), ('person', 'name', 'husband2', 'name2'), ('person', 'name', 'niece', 'name2'), ('person', 'name', 'niece', 'name1'), ('person', 'name', 'dunur', 'name1'), ('person', 'name', 'dunur', 'name2'), ('person', 'name', 'sister', 'name1'), ('person', 'name', 'nephew', 'name2'), ('person', 'name', 'target', 'name2'), ('person', 'name', 'sister', 'name2'), ('person', 'name', 'nephew', 'name1'), ('person', 'name', 'husband', 'name2'), ('person', 'name', 'brother', 'name1'), ('person', 'name', 'brother', 'name2'), ('person', 'name', 'husband', 'name1'), ('person', 'name', 'daughter', 'name2'), ('person', 'name', 'son', 'name2'), ('person', 'name', 'daughter', 'name1')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 32
+Num True Positive: 32
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+Elti_v1
+Confusion Matrix: {'True Positive': {('person', 'name', 'son', 'name1'), ('person', 'name', 'target', 'name1'), ('person', 'name', 'elti', 'name1'), ('person', 'name', 'elti', 'name2'), ('person', 'name', 'father', 'name2'), ('person', 'name', 'father', 'name1'), ('person', 'name', 'mother', 'name2'), ('person', 'name', 'mother', 'name1'), ('person', 'name', 'wife', 'name2'), ('person', 'name', 'wife', 'name1'), ('person', 'name', 'sister', 'name1'), ('person', 'name', 'sister', 'name2'), ('person', 'name', 'husband', 'name2'), ('person', 'name', 'brother', 'name1'), ('person', 'name', 'brother', 'name2'), ('person', 'name', 'son', 'name2'), ('person', 'name', 'husband', 'name1'), ('person', 'name', 'daughter', 'name2'), ('person', 'name', 'target', 'name2'), ('person', 'name', 'daughter', 'name1')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 20
+Num True Positive: 20
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+FNHK_v1
+Confusion Matrix: {'True Positive': {('pripady', 'Identifikace_pripadu', 'zup', 'Identifikace_pripadu'), ('pripady', 'Identifikace_pripadu', 'vykony', 'Identifikace_pripadu')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 2
+Num True Positive: 2
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+Facebook_v1
+Confusion Matrix: {'True Positive': {('feat', 'id', 'edges', 'id1'), ('feat', 'id', 'edges', 'id2')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 2
+Num True Positive: 2
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+Hepatitis_std_v1
+Confusion Matrix: {'True Positive': {('dispat', 'm_id', 'rel13', 'm_id'), ('dispat', 'm_id', 'rel12', 'm_id'), ('dispat', 'm_id', 'rel11', 'm_id'), ('inf', 'a_id', 'rel13', 'a_id'), ('indis', 'in_id', 'rel12', 'in_id'), ('Bio', 'b_id', 'rel11', 'b_id')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 6
+Num True Positive: 6
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+Mesh_v1
+Confusion Matrix: {'True Positive': {('element', 'name', 'quarter_circuit', 'name'), ('element', 'name', 'mesh_test_Neg', 'name'), ('element', 'name', 'one_side_fixed', 'name'), ('element', 'name', 'fixed', 'name'), ('element', 'name', 'half_circuit_hole', 'name'), ('element', 'name', 'mesh_test', 'name'), ('element', 'name', 'two_side_fixed', 'name'), ('element', 'name', 'short_for_hole', 'name'), ('element', 'name', 'sshort', 'name'), ('element', 'name', 'long_for_hole', 'name'), ('element', 'name', 'two_side_loaded', 'name'), ('element', 'name', 'llong', 'name'), ('element', 'name', 'mesh', 'name'), ('element', 'name', 'cont_loaded', 'name'), ('element', 'name', 'noload', 'name'), ('element', 'name', 'notimportant', 'name'), ('element', 'name', 'one_side_loaded', 'name'), ('element', 'name', 'opposite', 'name2'), ('element', 'name', 'equal', 'name2'), ('element', 'name', 'equal', 'name1'), ('element', 'name', 'opposite', 'name1'), ('element', 'name', 'circuit', 'name'), ('element', 'name', 'neighbour_zx', 'name1'), ('element', 'name', 'neighbour_zx', 'name2'), ('element', 'name', 'half_circuit', 'name'), ('element', 'name', 'neighbour_yz', 'name2'), ('element', 'name', 'neighbour_yz', 'name1'), ('element', 'name', 'free', 'name'), ('element', 'name', 'usual', 'name'), ('element', 'name', 'neighbour_xy', 'name2'), ('element', 'name', 'neighbour_xy', 'name1'), ('element', 'name', 'circuit_hole', 'name')}, 'False Positive': set(), 'False Negative': {('nnumber', 'name', 'mesh', 'num')}}
+Num Foreign Keys: 33
+Num True Positive: 33
+Num False Positive: 0
+Num False Negative: 1
+Accuracy: 0.9696969696969697
+
+Mooney_Family_v1
+Confusion Matrix: {'True Positive': {('person', 'name', 'daughter1', 'name2'), ('person', 'name', 'niece1', 'name2'), ('person', 'name', 'husband5', 'name2'), ('person', 'name', 'sister2', 'name1'), ('person', 'name', 'niece2', 'name1'), ('person', 'name', 'mother', 'name2'), ('person', 'name', 'niece4', 'name2'), ('person', 'name', 'son3', 'name1'), ('person', 'name', 'wife', 'name1'), ('person', 'name', 'son3', 'name2'), ('person', 'name', 'niece', 'name2'), ('person', 'name', 'daughter4', 'name1'), ('person', 'name', 'daughter4', 'name2'), ('person', 'name', 'husband1', 'name1'), ('person', 'name', 'son1', 'name1'), ('person', 'name', 'mother1', 'name2'), ('person', 'name', 'husband1', 'name2'), ('person', 'name', 'daughter3', 'name1'), ('person', 'name', 'uncle4', 'name2'), ('person', 'name', 'brother2', 'name2'), ('person', 'name', 'brother1', 'name1'), ('person', 'name', 'mother5', 'name1'), ('person', 'name', 'nephew4', 'name2'), ('person', 'name', 'niece1', 'name1'), ('person', 'name', 'husband5', 'name1'), ('person', 'name', 'father3', 'name1'), ('person', 'name', 'father3', 'name2'), ('person', 'name', 'father', 'name2'), ('person', 'name', 'uncle2', 'name2'), ('person', 'name', 'son4', 'name2'), ('person', 'name', 'mother', 'name1'), ('person', 'name', 'father5', 'name2'), ('person', 'name', 'aunt4', 'name2'), ('person', 'name', 'niece4', 'name1'), ('person', 'name', 'husband2', 'name1'), ('person', 'name', 'aunt', 'name2'), ('person', 'name', 'husband2', 'name2'), ('person', 'name', 'niece', 'name1'), ('person', 'name', 'niece3', 'name1'), ('person', 'name', 'niece3', 'name2'), ('person', 'name', 'sister1', 'name1'), ('person', 'name', 'mother1', 'name1'), ('person', 'name', 'sister1', 'name2'), ('person', 'name', 'nephew', 'name2'), ('person', 'name', 'brother4', 'name1'), ('person', 'name', 'nephew5', 'name1'), ('person', 'name', 'son2', 'name2'), ('person', 'name', 'brother4', 'name2'), ('person', 'name', 'nephew3', 'name2'), ('person', 'name', 'nephew5', 'name2'), ('person', 'name', 'husband4', 'name2'), ('person', 'name', 'uncle4', 'name1'), ('person', 'name', 'brother2', 'name1'), ('person', 'name', 'mother4', 'name2'), ('person', 'name', 'daughter5', 'name1'), ('person', 'name', 'sister5', 'name2'), ('person', 'name', 'daughter5', 'name2'), ('person', 'name', 'husband', 'name1'), ('person', 'name', 'nephew4', 'name1'), ('person', 'name', 'sister3', 'name2'), ('person', 'name', 'husband', 'name2'), ('person', 'name', 'son', 'name2'), ('person', 'name', 'son5', 'name2'), ('person', 'name', 'brother3', 'name2'), ('person', 'name', 'husband3', 'name2'), ('person', 'name', 'father', 'name1'), ('person', 'name', 'father4', 'name1'), ('person', 'name', 'uncle2', 'name1'), ('person', 'name', 'uncle3', 'name2'), ('person', 'name', 'son4', 'name1'), ('person', 'name', 'father5', 'name1'), ('person', 'name', 'aunt4', 'name1'), ('person', 'name', 'uncle', 'name2'), ('person', 'name', 'aunt5', 'name1'), ('person', 'name', 'aunt', 'name1'), ('person', 'name', 'aunt5', 'name2'), ('person', 'name', 'father2', 'name2'), ('person', 'name', 'daughter2', 'name2'), ('person', 'name', 'uncle5', 'name2'), ('person', 'name', 'nephew', 'name1'), ('person', 'name', 'son2', 'name1'), ('person', 'name', 'nephew3', 'name1'), ('person', 'name', 'mother2', 'name1'), ('person', 'name', 'nephew1', 'name2'), ('person', 'name', 'husband4', 'name1'), ('person', 'name', 'mother2', 'name2'), ('person', 'name', 'brother5', 'name2'), ('person', 'name', 'brother5', 'name1'), ('person', 'name', 'aunt3', 'name2'), ('person', 'name', 'brother', 'name1'), ('person', 'name', 'brother', 'name2'), ('person', 'name', 'mother4', 'name1'), ('person', 'name', 'aunt2', 'name2'), ('person', 'name', 'sister5', 'name1'), ('person', 'name', 'father4', 'name2'), ('person', 'name', 'daughter', 'name2'), ('person', 'name', 'sister3', 'name1'), ('person', 'name', 'son', 'name1'), ('person', 'name', 'son5', 'name1'), ('person', 'name', 'brother3', 'name1'), ('person', 'name', 'sister2', 'name2'), ('person', 'name', 'niece2', 'name2'), ('person', 'name', 'husband3', 'name1'), ('person', 'name', 'uncle3', 'name1'), ('person', 'name', 'wife', 'name2'), ('person', 'name', 'uncle', 'name1'), ('person', 'name', 'nephew2', 'name1'), ('person', 'name', 'niece5', 'name1'), ('person', 'name', 'father2', 'name1'), ('person', 'name', 'nephew2', 'name2'), ('person', 'name', 'son1', 'name2'), ('person', 'name', 'niece5', 'name2'), ('person', 'name', 'daughter2', 'name1'), ('person', 'name', 'daughter3', 'name2'), ('person', 'name', 'father1', 'name1'), ('person', 'name', 'sister', 'name1'), ('person', 'name', 'father1', 'name2'), ('person', 'name', 'uncle1', 'name1'), ('person', 'name', 'sister', 'name2'), ('person', 'name', 'uncle5', 'name1'), ('person', 'name', 'uncle1', 'name2'), ('person', 'name', 'aunt1', 'name1'), ('person', 'name', 'mother3', 'name1'), ('person', 'name', 'brother1', 'name2'), ('person', 'name', 'aunt1', 'name2'), ('person', 'name', 'mother3', 'name2'), ('person', 'name', 'sister4', 'name1'), ('person', 'name', 'nephew1', 'name1'), ('person', 'name', 'sister4', 'name2'), ('person', 'name', 'aunt3', 'name1'), ('person', 'name', 'mother5', 'name2'), ('person', 'name', 'aunt2', 'name1'), ('person', 'name', 'daughter1', 'name1'), ('person', 'name', 'daughter', 'name1')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 134
+Num True Positive: 134
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+MuskSmall_v1
+Confusion Matrix: {'True Positive': {('molecule', 'molecule_name', 'conformation', 'molecule_name')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 1
+Num True Positive: 1
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+NBA_v1
+Confusion Matrix: {'True Positive': {('Game', 'GameId', 'Actions', 'GameId'), ('Player', 'PlayerId', 'Actions', 'PlayerId'), ('Team', 'TeamId', 'Actions', 'TeamId'), ('Team', 'TeamId', 'Game', 'Team2Id'), ('Team', 'TeamId', 'Game', 'Team1Id')}, 'False Positive': {('Team', 'TeamId', 'Actions', 'GameId'), ('Game', 'GameId', 'Actions', 'TeamId')}, 'False Negative': set()}
+Num Foreign Keys: 7
+Num True Positive: 5
+Num False Positive: 2
+Num False Negative: 0
+Accuracy: 0.7142857142857143
+
+NCAA_v1
+Confusion Matrix: {'True Positive': {('teams', 'team_id', 'regular_season_detailed_results', 'wteam'), ('teams', 'team_id', 'tourney_compact_results', 'wteam'), ('teams', 'team_id', 'tourney_seeds', 'team'), ('seasons', 'season', 'tourney_compact_results', 'season'), ('teams', 'team_id', 'tourney_detailed_results', 'lteam'), ('teams', 'team_id', 'tourney_compact_results', 'lteam'), ('teams', 'team_id', 'regular_season_detailed_results', 'lteam'), ('seasons', 'season', 'tourney_seeds', 'season'), ('teams', 'team_id', 'regular_season_compact_results', 'wteam'), ('seasons', 'season', 'regular_season_compact_results', 'season'), ('seasons', 'season', 'tourney_detailed_results', 'season'), ('seasons', 'season', 'regular_season_detailed_results', 'season'), ('seasons', 'season', 'tourney_slots', 'season'), ('teams', 'team_id', 'regular_season_compact_results', 'lteam')}, 'False Positive': set(), 'False Negative': {('teams', 'team_id', 'target', 'team_id2'), ('teams', 'team_id', 'tourney_detailed_results', 'wteam'), ('teams', 'team_id', 'target', 'team_id1')}}
+Num Foreign Keys: 17
+Num True Positive: 17
+Num False Positive: 0
+Num False Negative: 3
+Accuracy: 0.8235294117647058
+
+PTE_v1
+Confusion Matrix: {'True Positive': {('pte_drug', 'drug_id', 'pte_sulfo', 'Arg0'), ('pte_drug', 'drug_id', 'pte_amine', 'Arg0'), ('pte_drug', 'drug_id', 'pte_mutagenic', 'Arg0'), ('pte_drug', 'drug_id', 'pte_imine', 'Arg0'), ('pte_drug', 'drug_id', 'pte_atm', 'drug_id'), ('pte_drug', 'drug_id', 'pte_testactive', 'Arg0'), ('pte_drug', 'drug_id', 'pte_bond', 'drug_id'), ('pte_drug', 'drug_id', 'pte_atm_max_charge', 'Arg0'), ('pte_drug', 'drug_id', 'pte_sulfide', 'Arg0'), ('pte_drug', 'drug_id', 'pte_alkyl_halide', 'Arg0'), ('pte_drug', 'drug_id', 'pte_ether', 'Arg0'), ('pte_drug', 'drug_id', 'pte_ester', 'Arg0'), ('pte_drug', 'drug_id', 'pte_non_ar_hetero_5_ring', 'Arg0'), ('pte_drug', 'drug_id', 'pte_phenol', 'Arg0'), ('pte_drug', 'drug_id', 'pte_methyl', 'Arg0'), ('pte_drug', 'drug_id', 'pte_bond_count', 'Arg0'), ('pte_drug', 'drug_id', 'pte_non_ar_6c_ring', 'Arg0'), ('pte_drug', 'drug_id', 'pte_ketone', 'Arg0'), ('pte_atm', 'atom_id', 'pte_bond', 'atom_id1'), ('pte_number', 'Binary', 'pte_active', 'is_active'), ('pte_drug', 'drug_id', 'pte_non_ar_5c_ring', 'Arg0'), ('pte_drug', 'drug_id', 'pte_atm_count', 'Arg0'), ('pte_atm', 'atom_id', 'pte_bond', 'atom_id2'), ('pte_drug', 'drug_id', 'pte_ind', 'Arg0'), ('pte_drug', 'drug_id', 'pte_non_ar_hetero_6_ring', 'Arg0'), ('pte_drug', 'drug_id', 'pte_testactive_Neg', 'Arg0'), ('pte_drug', 'drug_id', 'pte_methoxy', 'Arg0'), ('pte_drug', 'drug_id', 'pte_active', 'drug_id'), ('pte_drug', 'drug_id', 'active', 'Arg0'), ('pte_drug', 'drug_id', 'pte_alcohol', 'Arg0'), ('pte_drug', 'drug_id', 'postestactive', 'Arg0'), ('pte_drug', 'drug_id', 'pte_six_ring', 'Arg0'), ('pte_atm', 'atom_id', 'pte_atm_bond_count', 'atom_id'), ('pte_drug', 'drug_id', 'pte_five_ring', 'Arg0'), ('pte_drug', 'drug_id', 'pte_has_property', 'Arg0'), ('pte_drug', 'drug_id', 'pte_nitro', 'Arg0'), ('pte_drug', 'drug_id', 'postestactive_Neg', 'Arg0'), ('pte_drug', 'drug_id', 'pte_atm_min_charge', 'Arg0'), ('pte_drug', 'drug_id', 'pte_ames', 'Arg0')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 39
+Num True Positive: 39
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+Pima_v1
+Confusion Matrix: {'True Positive': {('pima', 'arg1', 'tricepts', 'arg1'), ('pima', 'arg1', 'age', 'arg1'), ('pima', 'arg1', 'diastolic', 'arg1'), ('pima', 'arg1', 'bmi', 'arg1'), ('pima', 'arg1', 'serum', 'arg1'), ('pima', 'arg1', 'pedigree', 'arg1'), ('pima', 'arg1', 'numPreg', 'arg1'), ('pima', 'arg1', 'plasma', 'arg1')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 8
+Num True Positive: 8
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+PremierLeague_v1
+Confusion Matrix: {'True Positive': {('Teams', 'TeamID', 'Actions', 'TeamID'), ('Players', 'PlayerID', 'Actions', 'PlayerID'), ('Matches', 'MatchID', 'Actions', 'MatchID')}, 'False Positive': set(), 'False Negative': {('Teams', 'TeamID', 'Matches', 'TeamHomeID'), ('Teams', 'TeamID', 'Matches', 'TeamAwayID')}}
+Num Foreign Keys: 5
+Num True Positive: 5
+Num False Positive: 0
+Num False Negative: 2
+Accuracy: 0.6
+
+Pyrimidine_v1
+Confusion Matrix: {'True Positive': {('molecule', 'molecule_id', 'position', 'molecule_id')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 1
+Num True Positive: 1
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+SAP_v1
+Confusion Matrix: {'True Positive': {('Demog', 'GEOID', 'Customers', 'GEOID'), ('Customers', 'ID', 'Sales', 'REFID')}, 'False Positive': set(), 'False Negative': {('Customers', 'ID', 'Mailings1_2', 'REFID')}}
+Num Foreign Keys: 3
+Num True Positive: 3
+Num False Positive: 0
+Num False Negative: 1
+Accuracy: 0.6666666666666666
+
+SAT_v1
+Confusion Matrix: {'True Positive': {('time', 'tm', 'tm257_battery_voltage', 'tm'), ('class', 'cls', 'tm043_switch', 'class'), ('class', 'cls', 'tm071_asr_or_switch_20', 'class'), ('class', 'cls', 'tm007_switch', 'class'), ('time', 'tm', 'tm070_supply_3c', 'tm'), ('time', 'tm', 'tm055_supply_1b', 'tm'), ('time', 'tm', 'gmt_mission_phase', 'tm'), ('class', 'cls', 'tm011_eod_override', 'class'), ('time', 'tm', 'tm001_eod_relay', 'tm'), ('class', 'cls', 'tm015_eod_signaled', 'class'), ('time', 'tm', 'tm002_battov_temp', 'tm'), ('class', 'cls', 'tm031_switch', 'class'), ('class', 'cls', 'tm029_ovt_disabled', 'class'), ('class', 'cls', 'tm222_charging', 'class'), ('class', 'cls', 'tm021_eoc_disabled', 'class'), ('class', 'cls', 'tm017_switch', 'class'), ('time', 'tm', 'tm042_switch', 'tm'), ('trfl', 'tf', 'fault', 'tf'), ('class', 'cls', 'tm220_supply_1c', 'class'), ('time', 'tm', 'tm038_switch', 'tm'), ('class', 'cls', 'tm013_switch', 'class'), ('time', 'tm', 'succ', 'tm2'), ('class', 'cls', 'tm018_switch', 'class'), ('time', 'tm', 'tm058_asr_or_switch_10', 'tm'), ('time', 'tm', 'tm022_switch', 'tm'), ('class', 'cls', 'tm054_supply_1a', 'class'), ('class', 'cls', 'tm039_eod_disabled', 'class'), ('time', 'tm', 'tm211_bus_voltage', 'tm'), ('class', 'cls', 'tm257_battery_voltage', 'class'), ('time', 'tm', 'tm057_supply_2c', 'tm'), ('class', 'cls', 'tm055_supply_1b', 'class'), ('time', 'tm', 'succ', 'tm1'), ('class', 'cls', 'tm070_supply_3c', 'class'), ('class', 'cls', 'tm004_eoc_signaled', 'class'), ('time', 'tm', 'tm040_switch', 'tm'), ('time', 'tm', 'tm009_switch', 'tm'), ('time', 'tm', 'fault_test', 'tm'), ('time', 'tm', 'tm007_switch', 'tm'), ('class', 'cls', 'tm022_switch', 'class'), ('time', 'tm', 'tm071_asr_or_switch_20', 'tm'), ('class', 'cls', 'tm001_eod_relay', 'class'), ('class', 'cls', 'tm002_battov_temp', 'class'), ('class', 'cls', 'tm042_switch', 'class'), ('time', 'tm', 'tm021_eoc_disabled', 'tm'), ('time', 'tm', 'tm029_ovt_disabled', 'tm'), ('time', 'tm', 'tm222_charging', 'tm'), ('time', 'tm', 'tm011_eod_override', 'tm'), ('time', 'tm', 'tm017_switch', 'tm'), ('class', 'cls', 'tm038_switch', 'class'), ('time', 'tm', 'tm043_switch', 'tm'), ('class', 'cls', 'tm009_switch', 'class'), ('class', 'cls', 'tm058_asr_or_switch_10', 'class'), ('class', 'cls', 'tm211_bus_voltage', 'class'), ('time', 'tm', 'tm031_switch', 'tm'), ('class', 'cls', 'tm057_supply_2c', 'class'), ('time', 'tm', 'tm015_eod_signaled', 'tm'), ('trfl', 'tf', 'fault_test', 'tf'), ('time', 'tm', 'fault', 'tm'), ('time', 'tm', 'tm220_supply_1c', 'tm'), ('time', 'tm', 'tm054_supply_1a', 'tm'), ('time', 'tm', 'tm039_eod_disabled', 'tm'), ('class', 'cls', 'tm040_switch', 'class'), ('time', 'tm', 'tm004_eoc_signaled', 'tm'), ('time', 'tm', 'tm013_switch', 'tm'), ('time', 'tm', 'tm018_switch', 'tm')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 65
+Num True Positive: 65
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+SalesDB_v1
+Confusion Matrix: {'True Positive': {('Products', 'ProductID', 'Sales', 'ProductID')}, 'False Positive': set(), 'False Negative': {('Employees', 'EmployeeID', 'Sales', 'SalesPersonID'), ('Customers', 'CustomerID', 'Sales', 'CustomerID')}}
+Num Foreign Keys: 3
+Num True Positive: 3
+Num False Positive: 0
+Num False Negative: 2
+Accuracy: 0.3333333333333333
+
+Same_gen_v1
+Confusion Matrix: {'True Positive': {('person', 'name', 'target', 'name1'), ('person', 'name', 'same_gen', 'name2'), ('person', 'name', 'parent', 'name1'), ('person', 'name', 'same_gen', 'name1'), ('person', 'name', 'parent', 'name2'), ('person', 'name', 'target', 'name2')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 6
+Num True Positive: 6
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+Student_loan_v1
+Confusion Matrix: {'True Positive': {('person', 'name', 'enrolled', 'name'), ('person', 'name', 'filed_for_bankrupcy', 'name'), ('person', 'name', 'disabled', 'name'), ('person', 'name', 'no_payment_due', 'name'), ('bool', 'name', 'no_payment_due', 'bool'), ('person', 'name', 'longest_absense_from_school', 'name'), ('person', 'name', 'unemployed', 'name'), ('person', 'name', 'male', 'name'), ('person', 'name', 'enlist', 'name')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 9
+Num True Positive: 9
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+Telstra_v1
+Confusion Matrix: {'True Positive': {('target', 'id', 'severity_type', 'id'), ('target', 'id', 'log_feature', 'id'), ('target', 'id', 'event_type', 'id'), ('target', 'id', 'resource_type', 'id')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 4
+Num True Positive: 4
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+Toxicology_v1
+Confusion Matrix: {'True Positive': {('bond', 'bond_id', 'connected', 'bond_id'), ('atom', 'atom_id', 'connected', 'atom_id'), ('molecule', 'molecule_id', 'atom', 'molecule_id'), ('atom', 'atom_id', 'connected', 'atom_id2'), ('molecule', 'molecule_id', 'bond', 'molecule_id')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 5
+Num True Positive: 5
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+Triazine_v1
+Confusion Matrix: {'True Positive': {('molecule', 'molecule_id', 'position', 'molecule_id')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 1
+Num True Positive: 1
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+TubePricing_v1
+Confusion Matrix: {'True Positive': {('type_connection', 'connection_type_id', 'comp_sleeve', 'connection_type_id'), ('type_end_form', 'end_form_id', 'comp_threaded', 'end_form_id_4'), ('type_end_form', 'end_form_id', 'comp_adaptor', 'end_form_id_1'), ('type_component', 'component_type_id', 'comp_nut', 'component_type_id'), ('tube', 'tube_assembly_id', 'spec', 'tube_assembly_id'), ('tube', 'tube_assembly_id', 'target', 'tube_assembly_id'), ('tube_end_form', 'end_form_id', 'tube', 'end_x'), ('type_end_form', 'end_form_id', 'comp_threaded', 'end_form_id_3'), ('components', 'component_id', 'comp_float', 'component_id'), ('components', 'component_id', 'comp_hfl', 'component_id'), ('type_component', 'component_type_id', 'comp_boss', 'component_type_id'), ('components', 'component_id', 'comp_boss', 'component_id'), ('tube', 'tube_assembly_id', 'bill_of_materials', 'tube_assembly_id'), ('type_component', 'component_type_id', 'comp_elbow', 'component_type_id'), ('components', 'component_id', 'comp_elbow', 'component_id'), ('type_component', 'component_type_id', 'comp_float', 'component_type_id'), ('type_component', 'component_type_id', 'comp_hfl', 'component_type_id'), ('type_connection', 'connection_type_id', 'comp_adaptor', 'connection_type_id_1'), ('components', 'component_id', 'bill_of_materials', 'component_id'), ('components', 'component_id', 'comp_tee', 'component_id'), ('tube_end_form', 'end_form_id', 'tube', 'end_a'), ('type_connection', 'connection_type_id', 'comp_threaded', 'connection_type_id_1'), ('type_end_form', 'end_form_id', 'comp_threaded', 'end_form_id_2'), ('components', 'component_id', 'comp_adaptor', 'component_id'), ('components', 'component_id', 'comp_threaded', 'component_id'), ('type_end_form', 'end_form_id', 'comp_adaptor', 'end_form_id_2'), ('components', 'component_id', 'comp_sleeve', 'component_id'), ('type_component', 'component_type_id', 'comp_straight', 'component_type_id'), ('type_component', 'component_type_id', 'comp_adaptor', 'component_type_id'), ('type_connection', 'connection_type_id', 'comp_threaded', 'connection_type_id_3'), ('type_connection', 'connection_type_id', 'comp_threaded', 'connection_type_id_4'), ('type_component', 'component_type_id', 'comp_threaded', 'component_type_id'), ('type_connection', 'connection_type_id', 'comp_adaptor', 'connection_type_id_2'), ('type_component', 'component_type_id', 'comp_sleeve', 'component_type_id'), ('components', 'component_id', 'comp_straight', 'component_id'), ('components', 'component_id', 'comp_other', 'component_id'), ('type_connection', 'connection_type_id', 'comp_threaded', 'connection_type_id_2'), ('components', 'component_id', 'comp_nut', 'component_id'), ('type_end_form', 'end_form_id', 'comp_threaded', 'end_form_id_1')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 39
+Num True Positive: 39
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+UTube_v1
+Confusion Matrix: {'True Positive': {('utube_states', 'id', 'utube_attributes', 'id_states')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 1
+Num True Positive: 1
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+UW_std_v1
+Confusion Matrix: {'True Positive': {('course', 'course_id', 'taughtBy', 'course_id'), ('person', 'p_id', 'advisedBy', 'p_id'), ('person', 'p_id', 'taughtBy', 'p_id')}, 'False Positive': set(), 'False Negative': {('person', 'p_id', 'advisedBy', 'p_id_dummy')}}
+Num Foreign Keys: 4
+Num True Positive: 4
+Num False Positive: 0
+Num False Negative: 1
+Accuracy: 0.75
+
+WebKP_v1
+Confusion Matrix: {'True Positive': {('webpage', 'webpage_id', 'cites', 'cited_paper_id'), ('webpage', 'webpage_id', 'content', 'webpage_id'), ('webpage', 'webpage_id', 'cites', 'citing_paper_id')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 3
+Num True Positive: 3
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+airbnb-simplified
+Confusion Matrix: {'True Positive': {('users', 'id', 'sessions', 'user_id')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 1
+Num True Positive: 1
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+fake_hotels
+Confusion Matrix: {'True Positive': {('hotels', 'hotel_id', 'guests', 'hotel_id')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 1
+Num True Positive: 1
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+fake_hotels_extended
+Confusion Matrix: {'True Positive': {('hotels', 'hotel_id', 'guests', 'hotel_id')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 1
+Num True Positive: 1
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+financial_v1
+Confusion Matrix: {'True Positive': {('district', 'district_id', 'client', 'district_id'), ('account', 'account_id', 'disp', 'account_id'), ('account', 'account_id', 'order', 'account_id'), ('account', 'account_id', 'loan', 'account_id'), ('account', 'account_id', 'trans', 'account_id'), ('client', 'client_id', 'disp', 'client_id'), ('district', 'district_id', 'account', 'district_id'), ('disp', 'disp_id', 'card', 'disp_id')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 8
+Num True Positive: 8
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+ftp_v1
+Confusion Matrix: {'True Positive': {('session', 'session_id', 'product', 'session_id')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 1
+Num True Positive: 1
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+genes_v1
+Confusion Matrix: {'True Positive': {('Classification', 'GeneID', 'Interactions', 'GeneID2'), ('Classification', 'GeneID', 'Genes', 'GeneID'), ('Classification', 'GeneID', 'Interactions', 'GeneID1')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 3
+Num True Positive: 3
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+got_families
+Confusion Matrix: {'True Positive': {('characters', 'character_id', 'character_families', 'character_id'), ('families', 'family_id', 'character_families', 'family_id')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 2
+Num True Positive: 2
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+imdb_MovieLens_v1
+Confusion Matrix: {'True Positive': {('users', 'userid', 'u2base', 'userid'), ('directors', 'directorid', 'movies2directors', 'directorid'), ('movies', 'movieid', 'movies2actors', 'movieid'), ('movies', 'movieid', 'movies2directors', 'movieid'), ('movies', 'movieid', 'u2base', 'movieid'), ('actors', 'actorid', 'movies2actors', 'actorid')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 6
+Num True Positive: 6
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+imdb_ijs_v1
+Confusion Matrix: {'True Positive': {('movies', 'id', 'roles', 'movie_id'), ('directors', 'id', 'movies_directors', 'director_id'), ('directors', 'id', 'directors_genres', 'director_id'), ('actors', 'id', 'roles', 'actor_id'), ('movies', 'id', 'movies_genres', 'movie_id'), ('movies', 'id', 'movies_directors', 'movie_id')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 6
+Num True Positive: 6
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+imdb_small_v1
+Confusion Matrix: {'True Positive': {('movies', 'id', 'roles', 'movie_id'), ('directors', 'id', 'movies_directors', 'director_id'), ('directors', 'id', 'directors_genres', 'director_id'), ('actors', 'id', 'roles', 'actor_id'), ('movies', 'id', 'movies_genres', 'movie_id'), ('movies', 'id', 'movies_directors', 'movie_id')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 6
+Num True Positive: 6
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+legalActs_v1
+Confusion Matrix: {'True Positive': {('legalacts', 'id', 'legalact_people', 'actId')}, 'False Positive': set(), 'False Negative': {('people', 'personId', 'legalact_people', 'peopleId'), ('legalacts', 'id', 'legalact_link', 'actId1'), ('legalacts', 'id', 'legalact_link', 'actId2'), ('legalacts', 'id', 'scrapefix', 'actId')}}
+Num Foreign Keys: 5
+Num True Positive: 5
+Num False Positive: 0
+Num False Negative: 4
+Accuracy: 0.2
+
+mutagenesis_v1
+Confusion Matrix: {'True Positive': {('atom', 'atom_id', 'bond', 'atom2_id'), ('molecule', 'molecule_id', 'atom', 'molecule_id'), ('atom', 'atom_id', 'bond', 'atom1_id')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 3
+Num True Positive: 3
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+nations_v1
+Confusion Matrix: {'True Positive': {('country', 'country_id', 'stat', 'country_id')}, 'False Positive': set(), 'False Negative': {('country', 'country_id', 'relation', 'nation_id1'), ('country', 'country_id', 'relation', 'nation_id2')}}
+Num Foreign Keys: 3
+Num True Positive: 3
+Num False Positive: 0
+Num False Negative: 2
+Accuracy: 0.3333333333333333
+
+restbase_v1
+Confusion Matrix: {'True Positive': {('geographic', 'city', 'location', 'city'), ('geographic', 'city', 'generalinfo', 'city'), ('generalinfo', 'id_restaurant', 'location', 'id_restaurant')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 3
+Num True Positive: 3
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+rossmann
+Confusion Matrix: {'True Positive': {('store', 'Store', 'historical', 'Store')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 1
+Num True Positive: 1
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+trains_v1
+Confusion Matrix: {'True Positive': {('trains', 'id', 'cars', 'train_id')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 1
+Num True Positive: 1
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+university_v1
+Confusion Matrix: {'True Positive': {('student', 'student_id', 'registration', 'student_id'), ('student', 'student_id', 'RA', 'student_id'), ('prof', 'prof_id', 'RA', 'prof_id'), ('course', 'course_id', 'registration', 'course_id')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 4
+Num True Positive: 4
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+walmart
+Confusion Matrix: {'True Positive': {('stores', 'Store', 'features', 'Store'), ('stores', 'Store', 'depts', 'Store')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 2
+Num True Positive: 2
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+world_v1
+Confusion Matrix: {'True Positive': {('Country', 'Code', 'City', 'CountryCode'), ('Country', 'Code', 'CountryLanguage', 'CountryCode')}, 'False Positive': set(), 'False Negative': set()}
+Num Foreign Keys: 2
+Num True Positive: 2
+Num False Positive: 0
+Num False Negative: 0
+Accuracy: 1.0
+
+Average Accuracy: 0.9040759774984375
+Num True Positive: 533
+Num False Positive: 2
+Num False Negative: 19
