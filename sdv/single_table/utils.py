@@ -274,7 +274,6 @@ def unflatten_dict(flat):
             Nested dict (if corresponds)
     """
     unflattened = {}
-
     for key, value in sorted(flat.items(), key=_key_order):
         if '__' in key:
             key, subkey = key.split('__', 1)

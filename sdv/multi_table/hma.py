@@ -511,7 +511,7 @@ class HMASynthesizer(BaseHierarchicalSampler, BaseMultiTableSynthesizer):
         prefix = f'__{table_name}__{foreign_key}__'
         flat_parameters = parent_row[[f'{prefix}num_rows']].astype(float).fillna(1e-6)
         
-        keys = [key for key in parent_row.keys() if key.startswith('prefix') if not key.endswith('num_rows')]
+        keys = [key for key in parent_row.keys() if key.startswith(prefix) if not key.endswith('num_rows')]
         pca_parameters = parent_row[keys].astype(float).fillna(1e-6)
         if not pca_parameters.empty:
             pca_parameters = self.pca[table_name][foreign_key].inverse_transform(pca_parameters)
