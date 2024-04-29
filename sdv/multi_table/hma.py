@@ -1,11 +1,13 @@
 """Hierarchical Modeling Algorithms."""
 
+from collections import defaultdict
 import logging
 from copy import deepcopy
 
 import numpy as np
 import pandas as pd
 from rdt.transformers import FloatFormatter
+from sklearn.decomposition import PCA
 from tqdm import tqdm
 
 from sdv._utils import _get_root_tables
@@ -160,6 +162,8 @@ class HMASynthesizer(BaseHierarchicalSampler, BaseMultiTableSynthesizer):
         self._learned_relationships = 0
         self._default_parameters = {}
         self.verbose = verbose
+        self.pca = defaultdict(dict)
+        self.pca_column_names = defaultdict(dict)
         BaseHierarchicalSampler.__init__(
             self,
             self.metadata,
@@ -401,8 +405,17 @@ class HMASynthesizer(BaseHierarchicalSampler, BaseMultiTableSynthesizer):
                         enforce_min_max_values=True)
                     self.extended_columns[child_name][column].fit(extension, column)
 
-                table = table.merge(extension, how='left', right_index=True, left_index=True)
                 num_rows_key = f'__{child_name}__{foreign_key}__num_rows'
+                table = table.merge(extension[num_rows_key], how='left', right_index=True, left_index=True)
+                extension = extension.drop(columns=num_rows_key).fillna(0)
+
+                if not extension.empty:
+                    self.pca_column_names[child_name][foreign_key] = extension.columns
+                    self.pca[child_name][foreign_key] = PCA(n_components=2)
+                    extension = self.pca[child_name][foreign_key].fit_transform(extension)
+                    extension = pd.DataFrame(extension, columns=[f'__{child_name}__{foreign_key}__{col}' for col in range(extension.shape[1])])
+                    table = table.merge(extension, how='left', right_index=True, left_index=True)
+
                 table[num_rows_key] = table[num_rows_key].fillna(0)
                 self._max_child_rows[num_rows_key] = table[num_rows_key].max()
                 self._min_child_rows[num_rows_key] = table[num_rows_key].min()
@@ -496,9 +509,14 @@ class HMASynthesizer(BaseHierarchicalSampler, BaseMultiTableSynthesizer):
                 parent child relationship.
         """
         prefix = f'__{table_name}__{foreign_key}__'
-        keys = [key for key in parent_row.keys() if key.startswith(prefix)]
-        new_keys = {key: key[len(prefix):] for key in keys}
-        flat_parameters = parent_row[keys].astype(float).fillna(1e-6)
+        flat_parameters = parent_row[[f'{prefix}num_rows']].astype(float).fillna(1e-6)
+        
+        keys = [key for key in parent_row.keys() if key.startswith('prefix') if not key.endswith('num_rows')]
+        pca_parameters = parent_row[keys].astype(float).fillna(1e-6)
+        if not pca_parameters.empty:
+            pca_parameters = self.pca[table_name][foreign_key].inverse_transform(pca_parameters)
+            pca_parameters = pd.Series(pca_parameters, index=self.pca_column_names[table_name][foreign_key])
+            flat_parameters = pd.concat([flat_parameters, pca_parameters], axis=0)
 
         num_rows_key = f'{prefix}num_rows'
         if num_rows_key in flat_parameters:
@@ -514,7 +532,8 @@ class HMASynthesizer(BaseHierarchicalSampler, BaseMultiTableSynthesizer):
             flat_parameters[parameter_name] = np.clip(  # this should be revisited in GH#1769
                 parameter, float_formatter._min_value, float_formatter._max_value)
 
-        return {new_keys[key]: value for key, value in flat_parameters.items()}
+        return {key[len(prefix):]: value for key, value in flat_parameters.items()}
+
 
     def _recreate_child_synthesizer(self, child_name, parent_name, parent_row):
         # A child table is created based on only one foreign key.
