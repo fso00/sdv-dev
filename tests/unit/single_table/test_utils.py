@@ -222,6 +222,15 @@ def test_unflatten_dict():
     }
     assert result == expected
 
+def test_unflatten_dict_with_bad_sort_comparison():
+    """Test unflatten_dict."""
+    # Run
+    flat = {
+        'foo__0__foo': 'foo value',
+        'foo__x__xyz': 'bar value',
+    }
+    result = unflatten_dict(flat)
+
 
 def test_handle_sampling_error():
     """Test when an error is raised at the end of the function when temp dir is ``True``."""

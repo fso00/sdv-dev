@@ -273,8 +273,16 @@ def unflatten_dict(flat):
         dict:
             Nested dict (if corresponds)
     """
+    from functools import cmp_to_key
+
+    def _cmp(x, y):
+        try:
+            return x > y
+        except TypeError:
+            return True
+
     unflattened = {}
-    for key, value in sorted(flat.items(), key=_key_order):
+    for key, value in sorted(flat.items(), key=cmp_to_key(_cmp)):
         if '__' in key:
             key, subkey = key.split('__', 1)
             subkey, name = subkey.rsplit('__', 1)
