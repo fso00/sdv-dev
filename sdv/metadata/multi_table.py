@@ -489,35 +489,27 @@ class MultiTableMetadata:
             raise InvalidMetadataError(
                 f'The relationships in the dataset are disjointed. {table_msg}')
 
-    def _detect_relationships(self):
+    def _detect_relationships_(self):
         """Automatically detect relationships between tables."""
         for parent_candidate in self.tables.keys():
             primary_key = self.tables[parent_candidate].primary_key
-            if primary_key is None:
-                continue
-
             for child_candidate in self.tables.keys() - {parent_candidate}:
                 child_meta = self.tables[child_candidate]
-                candidates = set()
-                for column_name in child_meta.columns.keys():
-                    if column_name != child_meta.primary_key:
-                        candidates.add(column_name)
-
-                for candidate in candidates:
+                if primary_key in child_meta.columns.keys():
                     try:
-                        original_foreign_key_sdtype = child_meta.columns[candidate]['sdtype']
+                        original_foreign_key_sdtype = child_meta.columns[primary_key]['sdtype']
                         if original_foreign_key_sdtype != 'id':
-                            self.update_column(child_candidate, candidate, sdtype='id')
+                            self.update_column(child_candidate, primary_key, sdtype='id')
 
                         self.add_relationship(
                             parent_candidate,
                             child_candidate,
                             primary_key,
-                            candidate
+                            primary_key
                         )
-                    except InvalidMetadataError as e:
+                    except InvalidMetadataError:
                         self.update_column(child_candidate,
-                                           candidate,
+                                           primary_key,
                                            sdtype=original_foreign_key_sdtype)
                         continue
 
@@ -528,38 +520,52 @@ class MultiTableMetadata:
                 f'Could not automatically add relationships for all tables. {str(invalid_error)}'
             )
             warnings.warn(warning_msg)
-    
-    def _detect_relationships_baseline(self, data):
+
+    def _detect_relationships__(self, data):
         """Automatically detect relationships between tables."""
-        for parent_candidate in self.tables.keys():
-            primary_key = self.tables[parent_candidate].primary_key
-            if primary_key is None:
-                continue
+        print('Detecting Relationships')
+        from time import time
+        start = time()
+        parent_candidates = [table for table in self.tables if self.tables[table].primary_key]
+        if parent_candidates:
+            primary_keys = {
+                parent_candidate: set(data[parent_candidate][self.tables[parent_candidate].primary_key])
+                for parent_candidate in parent_candidates
+            }
+            for child_candidate in self.tables:
+                print(child_candidate)
+                if len(parent_candidates) == 1 and child_candidate in parent_candidates:
+                    continue
 
-            for child_candidate in self.tables.keys() - {parent_candidate}:
-                child_meta = self.tables[child_candidate]
-                candidates = set()
-                for column_name in child_meta.columns.keys():
-                    if column_name != child_meta.primary_key:
-                        candidates.add(column_name)
-
-                for candidate in candidates:
-                    try:
-                        original_foreign_key_sdtype = child_meta.columns[candidate]['sdtype']
-                        if original_foreign_key_sdtype != 'id':
-                            self.update_column(child_candidate, candidate, sdtype='id')
-
-                        self.add_relationship(
-                            parent_candidate,
-                            child_candidate,
-                            primary_key,
-                            candidate
-                        )
-                    except InvalidMetadataError as e:
-                        self.update_column(child_candidate,
-                                           candidate,
-                                           sdtype=original_foreign_key_sdtype)
+                for column_name in data[child_candidate].columns:
+                    if column_name == self.tables[child_candidate].primary_key:
                         continue
+
+                    candidate_pks = []
+                    for parent_candidate, pks in primary_keys.items():
+                        if parent_candidate != child_candidate and data[child_candidate][column_name].values[0] in pks and data[child_candidate][column_name].values[-1] in pks:
+                            candidate_pks.append((parent_candidate, pks))
+
+                    if candidate_pks:
+                        fks = set(data[child_candidate][column_name])
+                        for parent_candidate, pks in candidate_pks:
+                            if fks.issubset(pks):
+                                original_foreign_key_sdtype = self.tables[child_candidate].columns[column_name]['sdtype']
+                                if original_foreign_key_sdtype != 'id':
+                                    self.update_column(child_candidate, column_name, sdtype='id')
+                                try:
+                                    self.add_relationship(
+                                        parent_candidate,
+                                        child_candidate,
+                                        self.tables[parent_candidate].primary_key,
+                                        column_name
+                                    )
+                                except InvalidMetadataError:
+                                    self.update_column(
+                                        child_candidate,
+                                        column_name,
+                                        sdtype=original_foreign_key_sdtype
+                                    )
 
         try:
             self._validate_all_tables_connected(self._get_parent_map(), self._get_child_map())
@@ -568,6 +574,121 @@ class MultiTableMetadata:
                 f'Could not automatically add relationships for all tables. {str(invalid_error)}'
             )
             warnings.warn(warning_msg)
+        print('Detect Relationships time: ', time()-start)
+
+    def _detect_relationships_bloom_filter(self, data):
+        """Automatically detect relationships between tables."""
+        parent_candidates = [table for table in self.tables if self.tables[table].primary_key]
+        if parent_candidates:
+            primary_keys = {}
+            for parent_candidate in parent_candidates:
+                primary_keys[parent_candidate] = Bloom(len(data[parent_candidate]), 0.1)
+                primary_keys[parent_candidate].update(list(data[parent_candidate][self.tables[parent_candidate].primary_key]))
+
+            for child_candidate in self.tables:
+                if len(parent_candidates) == 1 and child_candidate in parent_candidates:
+                    continue
+
+                for column_name in data[child_candidate].columns:
+                    if column_name == self.tables[child_candidate].primary_key:
+                        continue
+                
+                    candidate_pks = []
+                    for parent_candidate, pks in primary_keys.items():
+                        if parent_candidate != child_candidate and data[child_candidate][column_name].values[0] in pks and data[child_candidate][column_name].values[-1] in pks:
+                            candidate_pks.append((parent_candidate, pks))
+
+                    if candidate_pks:
+                        fks = data[child_candidate][column_name]
+                        if len(fks) > 1000: 
+                            fks = np.random.choice(fks, 1000)
+
+                        for parent_candidate, pks in primary_keys.items():
+                            flag = False
+                            for fk in fks:
+                                if fk not in pks:
+                                    flag = True
+                                    break
+
+                            if not flag:
+                                original_foreign_key_sdtype = self.tables[child_candidate].columns[column_name]['sdtype']
+                                if original_foreign_key_sdtype != 'id':
+                                    self.update_column(child_candidate, column_name, sdtype='id')
+                                try:
+                                    self.add_relationship(
+                                        parent_candidate,
+                                        child_candidate,
+                                        self.tables[parent_candidate].primary_key,
+                                        column_name
+                                    )
+                                except InvalidMetadataError:
+                                    self.update_column(
+                                        child_candidate,
+                                        column_name,
+                                        sdtype=original_foreign_key_sdtype
+                                    )
+
+        try:
+            self._validate_all_tables_connected(self._get_parent_map(), self._get_child_map())
+        except InvalidMetadataError as invalid_error:
+            warning_msg = (
+                f'Could not automatically add relationships for all tables. {str(invalid_error)}'
+            )
+            warnings.warn(warning_msg)
+
+    def _detect_relationships(self, data):
+        """Automatically detect relationships between tables."""
+        print('Detecting Relationships')
+        from time import time
+        start = time()
+        parent_candidates = [table for table in self.tables if self.tables[table].primary_key]
+        if parent_candidates:
+            primary_keys = {
+                parent_candidate: set(data[parent_candidate][self.tables[parent_candidate].primary_key].to_numpy()) # did this change after the first one
+                for parent_candidate in parent_candidates
+            }
+            for child_candidate in self.tables:
+                print(child_candidate)
+                if len(parent_candidates) == 1 and child_candidate in parent_candidates:
+                    continue
+
+                for column_name in data[child_candidate].columns:
+                    if column_name == self.tables[child_candidate].primary_key:
+                        continue
+
+                    fks = data[child_candidate][column_name].to_numpy() # converting a series to a numpy first speeds up the set operation 
+                    if len(fks) > 100:
+                        fks = np.random.choice(fks, 100, replace=False)
+                    for parent_candidate, pks in primary_keys.items():
+                        if parent_candidate == child_candidate:
+                            continue
+
+                        if set(fks).issubset(pks):
+                            original_foreign_key_sdtype = self.tables[child_candidate].columns[column_name]['sdtype']
+                            if original_foreign_key_sdtype != 'id':
+                                self.update_column(child_candidate, column_name, sdtype='id')
+                            try:
+                                self.add_relationship(
+                                    parent_candidate,
+                                    child_candidate,
+                                    self.tables[parent_candidate].primary_key,
+                                    column_name
+                                )
+                            except InvalidMetadataError:
+                                self.update_column(
+                                    child_candidate,
+                                    column_name,
+                                    sdtype=original_foreign_key_sdtype
+                                )
+
+        try:
+            self._validate_all_tables_connected(self._get_parent_map(), self._get_child_map())
+        except InvalidMetadataError as invalid_error:
+            warning_msg = (
+                f'Could not automatically add relationships for all tables. {str(invalid_error)}'
+            )
+            warnings.warn(warning_msg)
+        print('Time to detect relationships: ', time()-start)
 
     def _detect_relationships_basic(self, data):
         """Automatically detect relationships between tables."""
@@ -610,7 +731,7 @@ class MultiTableMetadata:
             )
             warnings.warn(warning_msg)
 
-    def _detect_relationships_bloom_filter(self, data):
+    def _detect_relationships_bloom_filter_(self, data):
         """Automatically detect relationships between tables."""
         bloom_filter = defaultdict(dict)
         largest_table = max([len(table) for table in data.values()])
@@ -951,51 +1072,6 @@ class MultiTableMetadata:
                             choices = np.random.choice(choices, 10)
                         if set(choices).issubset(pk_values):
                             candidates.add(column_name)
-
-                for candidate in candidates:
-                    try:
-                        original_foreign_key_sdtype = child_meta.columns[candidate]['sdtype']
-                        if original_foreign_key_sdtype != 'id':
-                            self.update_column(child_candidate, candidate, sdtype='id')
-
-                        self.add_relationship(
-                            parent_candidate,
-                            child_candidate,
-                            primary_key,
-                            candidate
-                        )
-                    except InvalidMetadataError as e:
-                        self.update_column(child_candidate,
-                                           candidate,
-                                           sdtype=original_foreign_key_sdtype)
-                        continue
-
-        try:
-            self._validate_all_tables_connected(self._get_parent_map(), self._get_child_map())
-        except InvalidMetadataError as invalid_error:
-            warning_msg = (
-                f'Could not automatically add relationships for all tables. {str(invalid_error)}'
-            )
-            warnings.warn(warning_msg)
-    
-    def _detect_relationships_only_unique(self, data):
-        """Automatically detect relationships between tables."""
-        for parent_candidate in self.tables.keys():
-            primary_key = self.tables[parent_candidate].primary_key
-            if primary_key is None:
-                continue
-            pk_values = set(data[parent_candidate][primary_key])
-
-            for child_candidate in self.tables.keys() - {parent_candidate}:
-                child_meta = self.tables[child_candidate]
-                candidates = set()
-                for column_name in child_meta.columns.keys():
-                    if column_name != child_meta.primary_key:
-                        choices = data[child_candidate][column_name].unique()
-                        #if len(choices) > 10:
-                        #    choices = np.random.choice(choices, 10)
-                        #if set(choices).issubset(pk_values):
-                        #candidates.add(column_name)
 
                 for candidate in candidates:
                     try:
