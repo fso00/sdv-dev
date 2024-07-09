@@ -34,6 +34,7 @@ class MultiTableMetadata:
     METADATA_SPEC_VERSION = 'MULTI_TABLE_V1'
 
     def __init__(self):
+        # Random change
         self.tables = {}
         self.relationships = []
         self._multi_table_updated = False
