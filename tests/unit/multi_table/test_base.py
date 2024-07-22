@@ -18,6 +18,7 @@ from sdv.errors import (
     SynthesizerInputError,
     VersionError,
 )
+from sdv.metadata.metadata import Metadata
 from sdv.metadata.multi_table import MultiTableMetadata
 from sdv.metadata.single_table import SingleTableMetadata
 from sdv.multi_table.base import BaseMultiTableSynthesizer
@@ -115,14 +116,15 @@ class TestBaseMultiTableSynthesizer:
         mock_generate_synthesizer_id.return_value = synthesizer_id
         mock_datetime.datetime.now.return_value = '2024-04-19 16:20:10.037183'
         metadata = get_multi_table_metadata()
-        metadata.validate = Mock()
 
         # Run
         with catch_sdv_logs(caplog, logging.INFO, 'MultiTableSynthesizer'):
             instance = BaseMultiTableSynthesizer(metadata)
 
+        instance.metadata.validate = Mock()
+
         # Assert
-        assert instance.metadata == metadata
+        assert isinstance(instance.metadata, Metadata)
         assert isinstance(instance._table_synthesizers['nesreca'], GaussianCopulaSynthesizer)
         assert isinstance(instance._table_synthesizers['oseba'], GaussianCopulaSynthesizer)
         assert isinstance(instance._table_synthesizers['upravna_enota'], GaussianCopulaSynthesizer)
@@ -137,6 +139,33 @@ class TestBaseMultiTableSynthesizer:
             'SYNTHESIZER CLASS NAME': 'BaseMultiTableSynthesizer',
             'SYNTHESIZER ID': 'BaseMultiTableSynthesizer_1.0.0_92aff11e9a5649d1a280990d1231a5f5',
         })
+
+    @patch('sdv.multi_table.base.generate_synthesizer_id')
+    @patch('sdv.multi_table.base.BaseMultiTableSynthesizer._check_metadata_updated')
+    def test__init__with_unified_metadata(
+        self, mock_check_metadata_updated, mock_generate_synthesizer_id
+    ):
+        """Test multi table base ``__init__`` works with the Metadata class"""
+        # Setup
+        synthesizer_id = 'BaseMultiTableSynthesizer_1.0.0_92aff11e9a5649d1a280990d1231a5f5'
+        mock_generate_synthesizer_id.return_value = synthesizer_id
+        metadata_dict = get_multi_table_metadata().to_dict()
+        metadata = Metadata().load_from_dict(metadata_dict)
+        metadata.validate = Mock()
+
+        # Run
+        instance = BaseMultiTableSynthesizer(metadata)
+
+        # Assert
+        assert instance.metadata == metadata
+        assert isinstance(instance._table_synthesizers['nesreca'], GaussianCopulaSynthesizer)
+        assert isinstance(instance._table_synthesizers['oseba'], GaussianCopulaSynthesizer)
+        assert isinstance(instance._table_synthesizers['upravna_enota'], GaussianCopulaSynthesizer)
+        assert instance._table_parameters == defaultdict(dict)
+        instance.metadata.validate.assert_called_once_with()
+        mock_check_metadata_updated.assert_called_once()
+        mock_generate_synthesizer_id.assert_called_once_with(instance)
+        assert instance._synthesizer_id == synthesizer_id
 
     def test__init__column_relationship_warning(self):
         """Test that a warning is raised only once when the metadata has column relationships."""

@@ -6,6 +6,7 @@ import pandas as pd
 import pytest
 
 from sdv.errors import SynthesizerInputError
+from sdv.metadata.metadata import Metadata
 from sdv.metadata.multi_table import MultiTableMetadata
 from sdv.multi_table.hma import HMASynthesizer
 from sdv.single_table.copulas import GaussianCopulaSynthesizer
@@ -17,6 +18,26 @@ class TestHMASynthesizer:
         """Test the default initialization of the ``HMASynthesizer``."""
         # Run
         metadata = get_multi_table_metadata()
+        metadata.validate = Mock()
+        instance = HMASynthesizer(metadata)
+
+        # Assert
+        assert instance.metadata == metadata
+        assert isinstance(instance._table_synthesizers['nesreca'], GaussianCopulaSynthesizer)
+        assert isinstance(instance._table_synthesizers['oseba'], GaussianCopulaSynthesizer)
+        assert isinstance(instance._table_synthesizers['upravna_enota'], GaussianCopulaSynthesizer)
+        assert instance._table_parameters == {
+            'nesreca': {'default_distribution': 'beta'},
+            'oseba': {'default_distribution': 'beta'},
+            'upravna_enota': {'default_distribution': 'beta'},
+        }
+        instance.metadata.validate.assert_called_once_with()
+
+    def test___init__with_unified_metadata(self):
+        """Test the default initialization of the ``HMASynthesizer`` with Metadata."""
+        # Run
+        metadata_dict = get_multi_table_metadata().to_dict()
+        metadata = Metadata.load_from_dict(metadata_dict)
         metadata.validate = Mock()
         instance = HMASynthesizer(metadata)
 

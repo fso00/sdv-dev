@@ -65,7 +65,7 @@ class Metadata(MultiTableMetadata):
             Instance of ``Metadata``.
         """
         if not isinstance(single_metadata_table, SingleTableMetadata):
-            raise InvalidMetadataError('Cannot convert given legacy metadata')
+            raise InvalidMetadataError('Cannot convert given legacy metadata.')
         instance = cls()
         instance._set_metadata_dict(single_metadata_table.to_dict())
         return instance

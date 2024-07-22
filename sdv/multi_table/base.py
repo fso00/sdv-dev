@@ -26,6 +26,8 @@ from sdv.errors import (
     SynthesizerInputError,
 )
 from sdv.logging import disable_single_table_logger, get_sdv_logger
+from sdv.metadata.metadata import Metadata
+from sdv.metadata.multi_table import MultiTableMetadata
 from sdv.single_table.copulas import GaussianCopulaSynthesizer
 
 SYNTHESIZER_LOGGER = get_sdv_logger('MultiTableSynthesizer')
@@ -96,7 +98,11 @@ class BaseMultiTableSynthesizer:
             )
 
     def __init__(self, metadata, locales=['en_US'], synthesizer_kwargs=None):
-        self.metadata = metadata
+        unified_metadata = metadata
+        if not isinstance(metadata, Metadata):
+            print('Incorrect Metadata')
+            unified_metadata = Metadata.load_from_dict(metadata.to_dict())
+        self.metadata = unified_metadata
         with warnings.catch_warnings():
             warnings.filterwarnings('ignore', message=r'.*column relationship.*')
             self.metadata.validate()
