@@ -1332,6 +1332,7 @@ class TestHMASynthesizer:
         metadata.set_primary_key('child_table2', 'id')
         metadata.add_column('child_table2', 'fk1', sdtype='id')
         metadata.add_column('child_table2', 'fk2', sdtype='id')
+        metadata.add_column('child_table2', 'cat_type', sdtype='categorical')
 
         metadata.add_relationship(
             parent_table_name='parent_table',
@@ -1360,7 +1361,8 @@ class TestHMASynthesizer:
             'child_table2': pd.DataFrame({
                 'id': [1, 2, 3],
                 'fk1': [1, 2, np.nan],
-                'fk2': [1, 2, np.nan],
+                'fk2': [1, np.nan, np.nan],
+                'cat_type': pd.Series(['siamese', 'persian', 'american shorthair'], dtype='object'),
             }),
         }
 
@@ -1370,8 +1372,15 @@ class TestHMASynthesizer:
         metadata.validate()
         metadata.validate_data(data)
 
-        # Run and Assert
+        # Run
         synthesizer.fit(data)
+        sampled = synthesizer.sample()
+
+        # Assert
+        assert len(sampled['parent_table']) == 3
+        assert sum(pd.isna(sampled['child_table1']['fk'])) == 1
+        assert sum(pd.isna(sampled['child_table2']['fk1'])) == 1
+        assert sum(pd.isna(sampled['child_table2']['fk2'])) == 2
 
     def test_sampling_with_unknown_sdtype_numerical_column(self):
         """Test that if a numerical column is detected as unknown in the metadata,
