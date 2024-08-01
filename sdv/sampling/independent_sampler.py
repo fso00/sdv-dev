@@ -10,7 +10,7 @@ class BaseIndependentSampler:
     """Independent sampler mixin.
 
     Args:
-        metadata (sdv.metadata.multi_table.MultiTableMetadata):
+        metadata (sdv.metadata.Metadata):
             Multi-table metadata representing the data tables that this sampler will be used for.
         table_synthesizers (dict):
             Dictionary mapping each table to a synthesizer. Should be instantiated and passed to
@@ -106,7 +106,7 @@ class BaseIndependentSampler:
                 try:
                     table_rows[name] = table_rows[name].dropna().astype(dtype)
                 except ValueError as e:
-                    column_metadata = metadata.columns.get(name)
+                    column_metadata = metadata.get_columns().get(name)
                     sdtype = column_metadata.get('sdtype')
                     if sdtype not in dtypes_to_sdtype.values():
                         LOGGER.info(

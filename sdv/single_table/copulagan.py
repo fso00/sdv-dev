@@ -59,7 +59,7 @@ class CopulaGANSynthesizer(CTGANSynthesizer):
 
 
     Args:
-        metadata (sdv.metadata.SingleTableMetadata):
+        metadata (sdv.metadata.Metadata):
             Single table metadata representing the data that this synthesizer will be used for.
         enforce_min_max_values (bool):
             Specify whether or not to clip the data returned by ``reverse_transform`` of
@@ -163,7 +163,7 @@ class CopulaGANSynthesizer(CTGANSynthesizer):
             cuda=cuda,
         )
 
-        validate_numerical_distributions(numerical_distributions, self.metadata.columns)
+        validate_numerical_distributions(numerical_distributions, self.metadata.get_columns())
         self.numerical_distributions = numerical_distributions or {}
         self.default_distribution = default_distribution or 'beta'
 
@@ -176,7 +176,7 @@ class CopulaGANSynthesizer(CTGANSynthesizer):
         }
 
     def _create_gaussian_normalizer_config(self, processed_data):
-        columns = self.metadata.columns
+        columns = self.metadata.get_columns()
         transformers = {}
         sdtypes = {}
         for column in processed_data.columns:

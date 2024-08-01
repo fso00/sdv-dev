@@ -34,6 +34,8 @@ from sdv.errors import (
     SynthesizerInputError,
 )
 from sdv.logging import get_sdv_logger
+from sdv.metadata.metadata import Metadata
+from sdv.metadata.single_table import DEPRECATION_MSG, SingleTableMetadata
 from sdv.single_table.utils import check_num_rows, handle_sampling_error, validate_file_path
 
 LOGGER = logging.getLogger(__name__)
@@ -50,7 +52,7 @@ class BaseSynthesizer:
     ``Synthesizers`` need to implement, as well as common functionality.
 
     Args:
-        metadata (sdv.metadata.SingleTableMetadata):
+        metadata (sdv.metadata.Metadata):
             Single table metadata representing the data that this synthesizer will be used for.
         enforce_min_max_values (bool):
             Specify whether or not to clip the data returned by ``reverse_transform`` of
@@ -87,8 +89,8 @@ class BaseSynthesizer:
                 self._data_processor._update_transformers_by_sdtypes(sdtype, transformer)
 
     def _check_metadata_updated(self):
-        if self.metadata._updated:
-            self.metadata._updated = False
+        if self.metadata._check_updated_flag():
+            self.metadata._reset_updated_flag()
             warnings.warn(
                 "We strongly recommend saving the metadata using 'save_to_json' for replicability"
                 ' in future SDV versions.'
@@ -99,6 +101,10 @@ class BaseSynthesizer:
     ):
         self._validate_inputs(enforce_min_max_values, enforce_rounding)
         self.metadata = metadata
+        if isinstance(metadata, SingleTableMetadata):
+            self.metadata = Metadata().load_from_dict(metadata.to_dict())
+            warnings.warn(DEPRECATION_MSG, FutureWarning)
+
         self.metadata.validate()
         self._check_metadata_updated()
         self.enforce_min_max_values = enforce_min_max_values
@@ -193,8 +199,8 @@ class BaseSynthesizer:
             raise InvalidDataError(synthesizer_errors)
 
     def _validate_transformers(self, column_name_to_transformer):
-        primary_and_alternate_keys = self.metadata._get_primary_and_alternate_keys()
-        sequence_keys = self.metadata._get_set_of_sequence_keys()
+        primary_and_alternate_keys = self.metadata.get_primary_and_alternate_keys()
+        sequence_keys = self.metadata.get_set_of_sequence_keys()
         keys = primary_and_alternate_keys | sequence_keys
         for column, transformer in column_name_to_transformer.items():
             if transformer is None:
@@ -220,7 +226,7 @@ class BaseSynthesizer:
                 Dict mapping column names to transformers to be used for that column.
         """
         for column in column_name_to_transformer:
-            sdtype = self.metadata.columns.get(column, {}).get('sdtype')
+            sdtype = self.metadata.get_columns().get(column, {}).get('sdtype')
             if sdtype in {'categorical', 'boolean'}:
                 warnings.warn(
                     f"Replacing the default transformer for column '{column}' "
@@ -252,7 +258,7 @@ class BaseSynthesizer:
         return instantiated_parameters
 
     def get_metadata(self):
-        """Return the ``SingleTableMetadata`` for this synthesizer."""
+        """Return the ``Metadata`` for this synthesizer."""
         return self.metadata
 
     def load_custom_constraint_classes(self, filepath, class_names):
@@ -337,7 +343,7 @@ class BaseSynthesizer:
         # Order the output to match metadata
         ordered_field_transformers = {
             column_name: field_transformers.get(column_name)
-            for column_name in self.metadata.columns
+            for column_name in self.metadata.get_columns()
             if column_name in field_transformers
         }
 
@@ -504,6 +510,7 @@ class BaseSynthesizer:
         with open(filepath, 'rb') as f:
             try:
                 synthesizer = cloudpickle.load(f)
+                synthesizer.metadata = Metadata._convert_to_unified_metadata(synthesizer.metadata)
             except RuntimeError as e:
                 err_msg = (
                     'Attempting to deserialize object on a CUDA device but '
