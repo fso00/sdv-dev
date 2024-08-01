@@ -112,13 +112,10 @@ class NumericalFormatter:
             min_bound, max_bound = INTEGER_BOUNDS[self.computer_representation]
             column = column.clip(min_bound, max_bound)
 
-        is_integer = np.dtype(self._dtype).kind == 'i'
+        is_integer = pd.api.types.is_integer_dtype(self._dtype)
         if self.enforce_rounding and self._rounding_digits is not None:
             column = column.round(self._rounding_digits)
         elif is_integer:
             column = column.round(0)
 
-        if pd.isna(column).any() and is_integer:
-            return column
-
-        return column.astype(self._dtype)
+        return pd.Series(column).astype(self._dtype)
