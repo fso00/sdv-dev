@@ -644,6 +644,7 @@ class BaseSingleTableSynthesizer(BaseSynthesizer):
         """
         if self._model and not self._random_state_set:
             self._set_random_state(FIXED_RNG_SEED)
+
         need_sample = self._data_processor.get_sdtypes(primary_keys=False) or keep_extra_columns
         if self._model and need_sample:
             if conditions is None:
@@ -653,6 +654,7 @@ class BaseSingleTableSynthesizer(BaseSynthesizer):
                     raw_sampled = self._sample(num_rows, transformed_conditions)
                 except NotImplementedError:
                     raw_sampled = self._sample(num_rows)
+
             sampled = self._data_processor.reverse_transform(raw_sampled)
             if keep_extra_columns:
                 input_columns = self._data_processor._hyper_transformer._input_columns
@@ -663,6 +665,7 @@ class BaseSingleTableSynthesizer(BaseSynthesizer):
 
             if previous_rows is not None:
                 sampled = pd.concat([previous_rows, sampled], ignore_index=True)
+
             sampled = self._data_processor.filter_valid(sampled)
 
             if conditions is not None:
@@ -817,6 +820,7 @@ class BaseSingleTableSynthesizer(BaseSynthesizer):
         float_rtol=0.01,
         progress_bar=None,
         output_file_path=None,
+        keep_extra_columns=False,
     ):
         sampled = []
         batch_size = batch_size if num_rows > batch_size else num_rows
@@ -829,6 +833,7 @@ class BaseSingleTableSynthesizer(BaseSynthesizer):
                 float_rtol=float_rtol,
                 progress_bar=progress_bar,
                 output_file_path=output_file_path,
+                keep_extra_columns=keep_extra_columns,
             )
             sampled.append(sampled_rows)
 
@@ -846,6 +851,7 @@ class BaseSingleTableSynthesizer(BaseSynthesizer):
         graceful_reject_sampling=True,
         progress_bar=None,
         output_file_path=None,
+        keep_extra_columns=False
     ):
         batch_size = batch_size or len(dataframe)
         sampled_rows = self._sample_in_batches(
@@ -857,6 +863,7 @@ class BaseSingleTableSynthesizer(BaseSynthesizer):
             float_rtol=float_rtol,
             progress_bar=progress_bar,
             output_file_path=output_file_path,
+            keep_extra_columns=keep_extra_columns
         )
 
         if len(sampled_rows) > 0:
@@ -969,9 +976,8 @@ class BaseSingleTableSynthesizer(BaseSynthesizer):
 
         return sampled_data
 
-    def _sample_with_conditions(
-        self, conditions, max_tries_per_batch, batch_size, progress_bar=None, output_file_path=None
-    ):
+    def _sample_with_conditions(self, conditions, max_tries_per_batch, batch_size,
+                                progress_bar=None, output_file_path=None, keep_extra_columns=False):
         """Sample rows with conditions.
 
         Args:
@@ -1038,6 +1044,7 @@ class BaseSingleTableSynthesizer(BaseSynthesizer):
                     batch_size=batch_size,
                     progress_bar=progress_bar,
                     output_file_path=output_file_path,
+                    keep_extra_columns=keep_extra_columns,
                 )
                 all_sampled_rows.append(sampled_rows)
             else:
@@ -1057,6 +1064,7 @@ class BaseSingleTableSynthesizer(BaseSynthesizer):
                         batch_size=batch_size,
                         progress_bar=progress_bar,
                         output_file_path=output_file_path,
+                        keep_extra_columns=keep_extra_columns
                     )
                     all_sampled_rows.append(sampled_rows)
 
@@ -1096,41 +1104,12 @@ class BaseSingleTableSynthesizer(BaseSynthesizer):
     def sample_from_conditions(
         self, conditions, max_tries_per_batch=100, batch_size=None, output_file_path=None
     ):
-        """Sample rows from this table with the given conditions.
-
-        Args:
-            conditions (list[sdv.sampling.Condition]):
-                A list of sdv.sampling.Condition objects, which specify the column
-                values in a condition, along with the number of rows for that
-                condition.
-            max_tries_per_batch (int):
-                Number of times to retry sampling until the batch size is met. Defaults to 100.
-            batch_size (int):
-                The batch size to use per sampling call.
-            output_file_path (str or None):
-                The file to periodically write sampled rows to. Defaults to None.
-
-        Returns:
-            pandas.DataFrame:
-                Sampled data.
-
-        Raises:
-            ConstraintsNotMetError:
-                If the conditions are not valid for the given constraints.
-            ValueError:
-                If any of the following happens:
-                    * any of the conditions' columns are not valid.
-                    * no rows could be generated.
-        """
         output_file_path = validate_file_path(output_file_path)
-
         num_rows = functools.reduce(
             lambda num_rows, condition: condition.get_num_rows() + num_rows, conditions, 0
         )
-
         conditions = self._make_condition_dfs(conditions)
         self._validate_conditions(conditions)
-
         sampled = pd.DataFrame()
         try:
             with tqdm.tqdm(total=num_rows) as progress_bar:

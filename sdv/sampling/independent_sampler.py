@@ -1,7 +1,14 @@
 """Independent Samplers."""
 
+import functools
 import logging
 import warnings
+
+import tqdm
+import pandas as pd
+from copulas.multivariate import GaussianMultivariate
+
+from sdv.single_table.utils import check_num_rows, handle_sampling_error
 
 LOGGER = logging.getLogger(__name__)
 
@@ -40,7 +47,8 @@ class BaseIndependentSampler:
         """
         raise NotImplementedError()
 
-    def _sample_table(self, synthesizer, table_name, num_rows, sampled_data):
+    def _sample_table(self, synthesizer, table_name, num_rows, sampled_data, conditions,
+                      max_tries_per_batch=100, batch_size=None, output_file_path=None):
         """Sample a single table and all its children.
 
         Args:
@@ -54,9 +62,49 @@ class BaseIndependentSampler:
                 A dictionary mapping table names to sampled tables (pd.DataFrame).
         """
         LOGGER.info(f'Sampling {num_rows} rows from table {table_name}')
+        if conditions:
+            num_rows = functools.reduce(
+                lambda num_rows, condition: condition.get_num_rows() + num_rows, conditions, 0
+            )
+            conditions = synthesizer._make_condition_dfs(conditions)
+            synthesizer._validate_conditions(conditions)
+            sampled = pd.DataFrame()
+            try:
+                with tqdm.tqdm(total=num_rows) as progress_bar:
+                    progress_bar.set_description('Sampling conditions')
+                    for condition_dataframe in conditions:
+                        sampled_for_condition = synthesizer._sample_with_conditions(
+                            condition_dataframe,
+                            max_tries_per_batch,
+                            batch_size,
+                            progress_bar,
+                            output_file_path,
+                            keep_extra_columns=True
+                        )
+                        sampled_with_conditions = pd.concat(
+                            [sampled, sampled_for_condition],
+                            ignore_index=True
+                        )
 
-        sampled_rows = synthesizer._sample_batch(num_rows, keep_extra_columns=True)
-        sampled_data[table_name] = sampled_rows
+                is_reject_sampling = bool(
+                    hasattr(synthesizer, '_model') and\
+                    not isinstance(synthesizer._model, GaussianMultivariate)
+                )
+                check_num_rows(
+                    num_rows=len(sampled_with_conditions),
+                    expected_num_rows=num_rows,
+                    is_reject_sampling=is_reject_sampling,
+                    max_tries_per_batch=max_tries_per_batch,
+                )
+
+            except (Exception, KeyboardInterrupt) as error:
+                handle_sampling_error(output_file_path, error)
+
+            sampled_data[table_name] = sampled_with_conditions
+
+        else:
+            sampled_rows = synthesizer._sample_batch(num_rows, keep_extra_columns=True)
+            sampled_data[table_name] = sampled_rows
 
     def _connect_tables(self, sampled_data):
         """Connect all related tables.
@@ -123,7 +171,8 @@ class BaseIndependentSampler:
 
         return final_data
 
-    def _sample(self, scale=1.0):
+    def _sample(self, scale=1.0, conditions=None, max_tries_per_batch=100,
+                batch_size=None, output_file_path=None):
         """Sample the entire dataset.
 
         Returns a dictionary with all the tables of the dataset. The amount of rows sampled will
@@ -146,17 +195,23 @@ class BaseIndependentSampler:
         """
         sampled_data = {}
         send_min_sample_warning = False
-        for table in self.metadata.tables:
-            num_rows = int(self._table_sizes[table] * scale)
+        conditions = conditions if conditions else {}
+        for table_name in self.metadata.tables:
+            num_rows = int(self._table_sizes[table_name] * scale)
             if num_rows <= 0:
                 send_min_sample_warning = True
                 num_rows = 1
-            synthesizer = self._table_synthesizers[table]
+
+            synthesizer = self._table_synthesizers[table_name]
             self._sample_table(
                 synthesizer=synthesizer,
-                table_name=table,
+                table_name=table_name,
                 num_rows=num_rows,
                 sampled_data=sampled_data,
+                conditions=conditions.get(table_name),
+                max_tries_per_batch=max_tries_per_batch,
+                batch_size=batch_size,
+                output_file_path=output_file_path
             )
 
         if send_min_sample_warning:
@@ -168,3 +223,15 @@ class BaseIndependentSampler:
 
         self._connect_tables(sampled_data)
         return self._finalize(sampled_data)
+
+    def sample_from_conditions(
+        self, conditions, max_tries_per_batch=100, batch_size=None, output_file_path=None
+    ):
+        """Sample rows with the given conditions."""
+        return self._sample(
+            conditions=conditions,
+            max_tries_per_batch=100,
+            batch_size=None,
+            output_file_path=None,
+        )
+
